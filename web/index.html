@@ -2,9 +2,153 @@
 <head>
     <meta charset="utf-8">
     <title>运气到家调试配置</title>
-    <link rel="stylesheet" type="text/css" href="./css/index.css"/>
     <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="./js/qrcode.min.js"></script>
+
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            font-size: 20px;
+        }
+
+        .root_div {
+            width: 100%;
+            height: 100%;
+            /*background-color: #0079b6;*/
+            background-image: linear-gradient(-180deg, #4a6685, #4e3647);
+        }
+
+        .middle_div {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 200px;
+            right: 0;
+            padding-top: 4rem;
+            min-height: 520px;
+        }
+
+        #tab_content {
+            width: 60rem;
+            height: 40rem;
+            background-color: rgb(255, 255, 255);
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0px 6px 7.84px 0.16px rgba(0, 47, 71, 0.3);
+            padding: 1.5625rem 3.75rem 3.5rem 3.75rem;
+            /*font-family: "Microsoft YaHei";*/
+
+            /*position: absolute;*/
+            /*left: 200px;*/
+            /*right: 200px;*/
+            /*float: left;*/
+            overflow: hidden;
+        }
+
+        #tab_content .content {
+            width: 50rem;
+            height: 40rem;
+            margin: auto;
+            border-radius: 10px;
+            /*box-shadow: 0px 6px 7.84px 0.16px rgba(0, 47, 71, 0.3);*/
+            padding: 30px;
+            -moz-border-radius: 5px;
+        }
+
+        .menu_div {
+            width: 200px;
+            height: 100%;
+            float: left;
+            background: rgba(0, 0, 0, .3);
+        }
+
+        li {
+            height: 50px;
+            line-height: 50px;
+            list-style: none;
+            text-align: center;
+            width: 200px;
+        }
+
+        li.active {
+            color: #fff;
+            background: hsla(0, 0%, 100%, .1);
+        }
+
+        a {
+            text-decoration: none;
+            color: #FFF;
+            display: block;
+        }
+
+        .row {
+            width: 100%;
+            height: 2rem;
+            font-size: 1rem;
+        }
+
+        .qr {
+            position: relative;
+            left: 50%;
+            margin-top: 50px;
+            margin-left: -100px;
+            /*margin:auto;*/
+        }
+
+        .black_overlay {
+            display: none;
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1001;
+            -moz-opacity: 0.8;
+            opacity: .80;
+            filter: alpha(opacity=80);
+        }
+
+        .white_content {
+            display: none;
+            /*position: absolute;*/
+            /*top: 25%;*/
+            /*left: 30%;*/
+            width: 400px;
+            height: 440px;
+            /*border: 16px solid lightblue;*/
+            padding: 40px;
+            background-color: white;
+            z-index: 1002;
+            overflow: hidden;
+            border-radius: 10px;
+
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+            margin: auto;
+
+        }
+
+        .white_content_small {
+            display: none;
+            position: absolute;
+            top: 20%;
+            left: 30%;
+            width: 40%;
+            height: 50%;
+            border: 16px solid lightblue;
+            background-color: white;
+            z-index: 1002;
+            overflow: auto;
+        }
+    </style>
 
 </head>
 <body>
@@ -19,9 +163,417 @@
 </div>
 
 <div class="middle_div">
-    <div id="tab_content"> </div>
+    <div id="tab_content">
+        <div id="a_page" class="content">
+            <!--服务类型-->
+            <table border="0">
+                <tr>
+                    <th style="width: 150px"></th>
+                    <th style="width: 150px"></th>
+                    <th style="width: 150px"></th>
+                    <th style="width: 150px"></th>
+                    <th style="width: 150px"></th>
+                    <th style="width: 150px"></th>
+                    <th style="width: 150px"></th>
+                </tr>
+                <tr>
+                    <td>服务类型：</td>
+                    <td>
+                        <input type="radio" name="url_radio" id="url_cool" checked="true" onclick="onCoolChange()">
+                        <label for="url_cool">Cool</label>
+                    </td>
+                    <td>
+                        <input type="radio" name="url_radio" id="url_test" onclick="onTestChange()">
+                        <label for="url_test">Test</label>
+                    </td>
+                    <td>
+                        <input type="radio" name="url_radio" id="url_demo" onclick="onDemoChange()">
+                        <label for="url_demo">Demo</label>
+                    </td>
+                    <td>
+                        <input type="radio" name="url_radio" id="url_220m" onclick="on220mChange()">
+                        <label for="url_220m">220映射</label>
+                    </td>
+                    <td>
+                        <input type="radio" name="url_radio" id="url_220" onclick="on220Change()">
+                        <label for="url_220">220</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>业务地址：</td>
+                    <td colspan="5">
+                        <input type="text" id="business_addr">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>GPS地址：</td>
+                    <td colspan="3">
+                        <input type="text" id="gps_addr">
+                    </td>
+                    <td>端口：</td>
+                    <td>
+                        <input type="text" id="gps_port">
+                    </td>
+                </tr>
+                <tr>
+                    <td>新支付地址：</td>
+                    <td colspan="5">
+                        <input type="text" id="new_pay_addr">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2">
+                        <label for="open_debug">开启调试模式</label>
+                        <input type="checkbox" id="open_debug">
+                    </td>
+                    <td colspan="2">
+                        <label for="open_hx">开启环信</label>
+                        <input type="checkbox" id="open_hx">
+                    </td>
+                    <td colspan="2">
+                        <label for="write_log">日志写入文件</label>
+                        <input type="checkbox" id="write_log">
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="2">
+                        <label for="open_debug">旧版调试配置</label>
+                        <input type="checkbox" id="old_config">
+                    </td>
+
+                </tr>
+            </table>
+
+
+            <div class="row">
+                服务器地址：
+                <input type="radio" id="url_online" checked="true" onclick="url_online_change()">线上
+                <input type="radio" id="url_offline" onclick="url_offline_change()">线下
+                <input type="radio" id="url_shuang" onclick="url_shuang_change()">双
+                <input type="radio" id="url_tao" onclick="url_tao_change()">涛
+                <input type="radio" id="url_other" onclick="url_otherchange()">其他
+            </div>
+
+            <div class="row" id="url_input_row" style="display:none;">
+                <input id="url" placeholder="请输入服务器地址" style="width:100%" type="text">
+            </div>
+
+            <div class="row" style="display:none;">
+                是否开启环信：<input type="checkbox" id="isOpenHx" checked="true">
+            </div>
+            <div class="row">
+                是否调试模式：<input type="checkbox" id="isDebug">
+            </div>
+            <div class="row">
+                日志是否写到文件中：<input type="checkbox" id="isWriteLog">
+            </div>
+            <button type="button" class="row" onclick="createQR()">生成二维码</button>
+            <div id="qrcode" class="qr"></div>
+
+        </div>
+        <div id="b_page" class="content">
+            <div id="appinfo"></div>
+        </div>
+        <div id="c_page" class="content">
+            cccccc
+        </div>
+    </div>
 </div>
 
-<script type="text/javascript" src="./js/index.js"></script>
+<!--弹出层时背景层DIV-->
+<div id="fade" class="black_overlay"></div>
+<div id="popup_div" class="white_content">
+    <h4 id="title" style="text-align: center;">名称</h4>
+    <div id="download_qr" class="qr"></div>
+    <p style="margin-top: 50px; text-align:center">
+        <input style="margin:auto" type="button" value="确定" onclick="CloseDiv('popup_div','fade')"/>
+    </p>
+
+</div>
+
+
+<script type="text/javascript">
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////弹出层
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //显示弹出层
+    function ShowDiv(show_div, bg_div) {
+        document.getElementById(show_div).style.display = 'block';
+        document.getElementById(bg_div).style.display = 'block';
+        var bgdiv = document.getElementById(bg_div);
+        bgdiv.style.width = document.body.scrollWidth;
+        // bgdiv.style.height = $(document).height();
+        $("#" + bg_div).height($(document).height());
+    }
+    ;
+    //关闭弹出层
+    function CloseDiv(show_div, bg_div) {
+        document.getElementById(show_div).style.display = 'none';
+        document.getElementById(bg_div).style.display = 'none';
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////菜单项目
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    var tabs = document.getElementById('tabs').childNodes;
+    for (var i = 0; i < tabs.length; i++) {
+        if (1 == tabs[i].nodeType) {
+            changeStyle.call(tabs[i]);
+        }
+    }
+
+    function changeStyle() {
+        this.onclick = function () {
+            var list = this.parentNode.childNodes;
+            for (var i = 0; i < list.length; i++) {
+                if (1 == list[i].nodeType && 'active' == list[i].className) {
+                    list[i].className = "";
+                }
+            }
+            this.className = 'active';
+            if (this.id == "a_li") {
+            } else if (this.id == "b_li") {
+                getAppInfo()
+            } else if (this.id == "c_li") {
+            }
+        }
+    }
+    var tabs = document.getElementById('tabs').childNodes;
+    for (var i = 0; i < tabs.length; i++) {
+        if (1 == tabs[i].nodeType) {
+            changeStyle.call(tabs[i]);
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////第一个页面
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //云平台
+    var URL_COOL = "http://cool.haoyunqi.com.cn";
+    //demo
+    var URL_DEMO = "http://demo.haoyunqi.com.cn"
+    //Test
+    var URL_TEST = "http://ts-cool.haoyunqi.com.cn";
+    //220m
+    var URL_220 = "http://811713.cicp.net/cool.web";
+    //220
+    var URL_220 = "http://192.168.2.220:8080/cool.web";
+
+    //GPS地址
+    var gps_addr_200="";
+    //GPS端口
+    var gps_port_200="";
+
+
+    var URL_SHUANG = "http://192.168.2.21:8080/cool.shuang";
+    var URL_TAO = "http://192.168.2.20:8080/cool.web";
+
+    function onCoolChange() {
+        $("#business_addr").text();
+        $("#gps_addr").text();
+        $("#gps_port").text();
+        $("#new_pay_addr").text();
+    }
+
+
+    function onTestChange() {
+
+    }
+
+    function onDemoChange() {
+
+    }
+
+    function on220mChange() {
+
+    }
+
+    function on220Change() {
+
+    }
+
+
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: "",
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+
+    function createQR() {
+
+        var url = URL_220;
+        if (document.getElementById("url_online").checked) {
+            url = URL_COOL;
+        } else if (document.getElementById("url_offline").checked) {
+            url = URL_220;
+        } else if (document.getElementById("url_shuang").checked) {
+            url = URL_SHUANG;
+        } else if (document.getElementById("url_tao").checked) {
+            url = URL_TAO;
+        } else {
+            var otherUrl = document.getElementById("url").value;
+            var str = otherUrl.replace(/(^\s*)|(\s*$)/g, '');//去除空格;
+            if (str == '' || str == undefined || str == null) {
+                alert("地址不能为空")
+                return;
+            }
+            url = otherUrl;
+        }
+
+        var isOpenHx = document.getElementById("isOpenHx").checked;
+        var isDebug = document.getElementById("isDebug").checked
+        var isWriteLog = document.getElementById("isWriteLog").checked
+
+        var params = {
+            "packageName": "com.dlh.hqy.psclient",
+            "dateStr": getCurrentDateYYYYMMDD(),
+            "urlStr": url,
+            "openHx": isOpenHx,
+            "debug": isDebug,
+            "writeLog": isWriteLog
+        }
+        var json = JSON.stringify(params);
+
+        qrcode.clear();
+        qrcode.makeCode(json);
+    }
+
+
+    function url_online_change() {
+        document.getElementById("url_online").checked = true;
+        document.getElementById("url_offline").checked = false;
+        document.getElementById("url_shuang").checked = false;
+        document.getElementById("url_tao").checked = false;
+        document.getElementById("url_other").checked = false;
+        document.getElementById("url_input_row").style.display = 'none';
+
+    }
+
+    function url_offline_change() {
+        document.getElementById("url_online").checked = false;
+        document.getElementById("url_offline").checked = true;
+        document.getElementById("url_shuang").checked = false;
+        document.getElementById("url_tao").checked = false;
+        document.getElementById("url_other").checked = false;
+        document.getElementById("url_input_row").style.display = 'none';
+    }
+
+    function url_shuang_change() {
+        document.getElementById("url_online").checked = false;
+        document.getElementById("url_offline").checked = false;
+        document.getElementById("url_shuang").checked = true;
+        document.getElementById("url_tao").checked = false;
+        document.getElementById("url_other").checked = false;
+        document.getElementById("url_input_row").style.display = 'none';
+    }
+
+    function url_tao_change() {
+        document.getElementById("url_online").checked = false;
+        document.getElementById("url_offline").checked = false;
+        document.getElementById("url_shuang").checked = false;
+        document.getElementById("url_tao").checked = true;
+        document.getElementById("url_other").checked = false;
+        document.getElementById("url_input_row").style.display = 'none';
+    }
+
+
+    function url_otherchange() {
+        document.getElementById("url_online").checked = false;
+        document.getElementById("url_offline").checked = false;
+        document.getElementById("url_shuang").checked = false;
+        document.getElementById("url_tao").checked = false;
+        document.getElementById("url_other").checked = true;
+        document.getElementById("url_input_row").style.display = 'block';
+        document.getElementById("url").value = URL_220;
+    }
+
+    function getCurrentDateYYYYMMDD() {
+        var nowDate = new Date();
+        var year = nowDate.getFullYear();
+        var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        var day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+        return year + month + day + "";
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////第二个页面
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function getAppInfo() {
+        $('#appinfo').empty()
+        $.ajax({
+            type: "GET",
+            url: "TestAppServlet",
+            dataType: "json",
+            statusCode: {
+                404: function () {
+                    alert('page not found');
+                }
+            },
+            success: function (data) {
+                //alert(data);
+                var data2 = eval(data);
+                //表格
+                var table = $("<table border='0' style='width: 100%;'>");
+                // table.append($("<tr>"));
+                // table.append($("<th style='width: 70%;'>文件名称</th>"));
+                // table.append($("<th style='width: 15%;'>二维码</th>"));
+                // table.append($("</tr>"))
+
+                for (var i = 0; i < data2.length; i++) {
+                    var path = data2[i];
+                    var name = path.substr(path.lastIndexOf('/') + 1);
+                    table.append($("<tr>"));
+                    table.append($("<td style='width: 70%; height: 50px'>" + name + "</td>"));
+                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='二维码' onclick='showQr(this.id,this.name)'></td>"));
+                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='下载'  onclick='downloadQr(this.id,this.name)'></td>"));
+                    table.append($("</tr>"))
+                }
+                table.append($("</table>"));
+
+                $("#appinfo").append(table)
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function showQr(id, path) {
+        $('#download_qr').empty()
+        var qrcode = new QRCode(document.getElementById("download_qr"), {
+            text: "",
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        var downloadurl = location.protocol + "//" + window.location.host + "/" + path;
+        qrcode.makeCode(downloadurl);
+        $("#title").text(path.substr(path.lastIndexOf('/') + 1));
+        ShowDiv('popup_div', 'fade')
+    }
+
+
+    function downloadQr(id, path) {
+        var $eleForm = $("<form method='get'></form>");
+        $eleForm.attr("action", path);
+        $(document.body).append($eleForm);
+        //提交表单，实现下载
+        $eleForm.submit();
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////第三个页面
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+</script>
+
+
 </body>
 </html>

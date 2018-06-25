@@ -37,10 +37,13 @@ public class TestAppServlet extends HttpServlet {
 
         String testAppPath = this.getServletConfig().getServletContext().getRealPath("/") + Constant.TEST_APP_DIR_NAME;
         File parentDirectory = new File(testAppPath);
+        if (parentDirectory.exists()) {
+            parentDirectory.mkdirs();
+        }
         File[] tempList = parentDirectory.listFiles();
         for (int i = 0; i < tempList.length; i++) {
             if (tempList[i].isFile()) {
-                appPathList.add(Constant.TEST_APP_DIR_NAME + "\\" + tempList[i].getName());
+                appPathList.add(Constant.TEST_APP_DIR_NAME + "/" + tempList[i].getName());
             }
         }
         String userJson = JSON.toJSONString(appPathList);
