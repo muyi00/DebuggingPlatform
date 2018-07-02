@@ -16,8 +16,8 @@ import java.util.List;
 /**
  * 测试APPServle
  */
-@WebServlet("/TestAppServlet")
-public class TestAppServlet extends HttpServlet {
+@WebServlet("/AppServlet")
+public class AppServlet extends HttpServlet {
 
 
     /**

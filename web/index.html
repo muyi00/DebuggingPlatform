@@ -81,7 +81,7 @@
 
         a {
             text-decoration: none;
-            color: #FFF;
+            color: #fff;
             display: block;
         }
 
@@ -156,8 +156,6 @@
     <div class="menu_div">
         <ul class="options" id='tabs'>
             <li id="a_li" class='active'><a href="#a_page">调试配置</a></li>
-            <li id="b_li"><a href="#b_page">测试APP</a></li>
-            <li id="c_li"><a href="#c_page">线上APP</a></li>
         </ul>
     </div>
 </div>
@@ -275,12 +273,9 @@
             <div id="qrcode" class="qr"></div>
 
         </div>
-        <div id="b_page" class="content">
-            <div id="appinfo"></div>
-        </div>
-        <div id="c_page" class="content">
-            cccccc
-        </div>
+        <!--<div id="b_page" class="content">-->
+        <!--<div id="appinfo"></div>-->
+        <!--</div>-->
     </div>
 </div>
 
@@ -319,12 +314,36 @@
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////菜单项目
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    var tabs = document.getElementById('tabs').childNodes;
-    for (var i = 0; i < tabs.length; i++) {
-        if (1 == tabs[i].nodeType) {
-            changeStyle.call(tabs[i]);
-        }
-    }
+    window.onload = function () {
+        $.ajax({
+            type: "GET",
+            url: "AppDirServlet",
+            dataType: "json",
+            statusCode: {
+                404: function () {
+                    alert('page not found');
+                }
+            },
+            success: function (data) {
+                //alert(data);
+                var data2 = eval(data);
+                for (var i = 0; i < data2.length; i++) {
+                    $("#tabs").append("<li id='b_li_" + i + "' name='" + i + "'><a style='color: #fff' href='#b_page_" + i + "'>" + data2[i] + "</a></li>")
+                    $("#tab_content").append("<div id='b_page_" + i + "' class='content'> <div id='appinfo_" + i + "'> </div></div>")
+                }
+
+
+                var tabs = document.getElementById('tabs').childNodes;
+                for (var i = 0; i < tabs.length; i++) {
+                    if (1 == tabs[i].nodeType) {
+                        changeStyle.call(tabs[i]);
+                    }
+                }
+            },
+            error: function () {
+            }
+        });
+    };
 
     function changeStyle() {
         this.onclick = function () {
@@ -335,19 +354,27 @@
                 }
             }
             this.className = 'active';
+
+
             if (this.id == "a_li") {
-            } else if (this.id == "b_li") {
-                getAppInfo()
-            } else if (this.id == "c_li") {
+
+            } else {
+                var index = this.name;
+                var name = $("#" + this.id + ">a").text();
+                getAppInfo(name, index)
             }
+
+
+//            if (this.id == "a_li") {
+//
+//            } else if (this.id == "b_li") {
+//                getTestAppInfo()
+//            } else if (this.id == "c_li") {
+//                getAppInfo()
+//            }
         }
     }
-    var tabs = document.getElementById('tabs').childNodes;
-    for (var i = 0; i < tabs.length; i++) {
-        if (1 == tabs[i].nodeType) {
-            changeStyle.call(tabs[i]);
-        }
-    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////第一个页面
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,9 +390,9 @@
     var URL_220 = "http://192.168.2.220:8080/cool.web";
 
     //GPS地址
-    var gps_addr_200="";
+    var gps_addr_200 = "";
     //GPS端口
-    var gps_port_200="";
+    var gps_port_200 = "";
 
 
     var URL_SHUANG = "http://192.168.2.21:8080/cool.shuang";
@@ -504,7 +531,7 @@
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////第二个页面
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    function getAppInfo() {
+    function getTestAppInfo() {
         $('#appinfo').empty()
         $.ajax({
             type: "GET",
@@ -572,6 +599,86 @@
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////第三个页面
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function getAppInfo(dir, index) {
+        $("#appinfo_" + index).empty();
+        $.ajax({
+            type: "GET",
+            url: "TestAppServlet",
+            data: dir,
+            dataType: "json",
+            statusCode: {
+                404: function () {
+                    alert('page not found');
+                }
+            },
+            success: function (data) {
+                //alert(data);
+                var data2 = eval(data);
+                //表格
+                var table = $("<table border='0' style='width: 100%;'>");
+                // table.append($("<tr>"));
+                // table.append($("<th style='width: 70%;'>文件名称</th>"));
+                // table.append($("<th style='width: 15%;'>二维码</th>"));
+                // table.append($("</tr>"))
+
+                for (var i = 0; i < data2.length; i++) {
+                    var path = data2[i];
+                    var name = path.substr(path.lastIndexOf('/') + 1);
+                    table.append($("<tr>"));
+                    table.append($("<td style='width: 70%; height: 50px'>" + name + "</td>"));
+                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='二维码' onclick='showQr(this.id,this.name)'></td>"));
+                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='下载'  onclick='downloadQr(this.id,this.name)'></td>"));
+                    table.append($("</tr>"))
+                }
+                table.append($("</table>"));
+
+                $("#appinfo_" + index).append(table)
+            },
+            error: function () {
+            }
+        });
+    }
+
+
+    function getAppInfo() {
+        //$('#appinfo').empty()
+        $.ajax({
+            type: "GET",
+            url: "AppServlet",
+            dataType: "json",
+            statusCode: {
+                404: function () {
+                    alert('page not found');
+                }
+            },
+            success: function (data) {
+
+                alert(data);
+//                var data2 = eval(data);
+//                //表格
+//                var table = $("<table border='0' style='width: 100%;'>");
+//                // table.append($("<tr>"));
+//                // table.append($("<th style='width: 70%;'>文件名称</th>"));
+//                // table.append($("<th style='width: 15%;'>二维码</th>"));
+//                // table.append($("</tr>"))
+//
+//                for (var i = 0; i < data2.length; i++) {
+//                    var path = data2[i];
+//                    var name = path.substr(path.lastIndexOf('/') + 1);
+//                    table.append($("<tr>"));
+//                    table.append($("<td style='width: 70%; height: 50px'>" + name + "</td>"));
+//                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='二维码' onclick='showQr(this.id,this.name)'></td>"));
+//                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='下载'  onclick='downloadQr(this.id,this.name)'></td>"));
+//                    table.append($("</tr>"))
+//                }
+//                table.append($("</table>"));
+//
+//                $("#appinfo").append(table)
+            },
+            error: function () {
+            }
+        });
+    }
 </script>
 
 
