@@ -2,8 +2,9 @@
 <head>
     <meta charset="utf-8">
     <title>运气到家调试配置</title>
-    <script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="./js/qrcode.min.js"></script>
+    <script src="./js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.qrcode.min.js"></script>
+
 
     <style type="text/css">
         * {
@@ -15,7 +16,7 @@
             font-size: 20px;
         }
 
-        .root_div {
+        body {
             width: 100%;
             height: 100%;
             /*background-color: #0079b6;*/
@@ -118,7 +119,7 @@
             /*position: absolute;*/
             /*top: 25%;*/
             /*left: 30%;*/
-            width: 400px;
+            width: 800px;
             height: 440px;
             /*border: 16px solid lightblue;*/
             padding: 40px;
@@ -148,25 +149,38 @@
             z-index: 1002;
             overflow: auto;
         }
+
+        table tr {
+            height: 40px; /*把table标签的行高设定为固定值, 高度根据自己需求设定*/
+            overflow: hidden; /*超过隐藏*/
+        }
+
+        .tablestyle {
+            overflow-x: auto;
+            overflow-y: auto;
+            height: 100%;
+            width: 100%;
+        }
+
     </style>
 
 </head>
 <body>
-<div class="root_div">
-    <div class="menu_div">
-        <ul class="options" id='tabs'>
-            <li id="a_li" class='active'><a href="#a_page">调试配置</a></li>
-        </ul>
-    </div>
+<!--菜单部分-->
+<div class="menu_div">
+    <ul class="options" id='tabs'>
+        <li id="a_li" class='active'><a href="#a_page">调试配置</a></li>
+        <li id="c_li"><a href="#c_page">线上APP</a></li>
+    </ul>
 </div>
 
+<!--内容部分-->
 <div class="middle_div">
     <div id="tab_content">
         <div id="a_page" class="content">
             <!--服务类型-->
             <table border="0">
                 <tr>
-                    <th style="width: 150px"></th>
                     <th style="width: 150px"></th>
                     <th style="width: 150px"></th>
                     <th style="width: 150px"></th>
@@ -181,8 +195,8 @@
                         <label for="url_cool">Cool</label>
                     </td>
                     <td>
-                        <input type="radio" name="url_radio" id="url_test" onclick="onTestChange()">
-                        <label for="url_test">Test</label>
+                        <input type="radio" name="url_radio" id="url_test" onclick="onTsChange()">
+                        <label for="url_test">TS</label>
                     </td>
                     <td>
                         <input type="radio" name="url_radio" id="url_demo" onclick="onDemoChange()">
@@ -200,35 +214,17 @@
                 <tr>
                     <td>业务地址：</td>
                     <td colspan="5">
-                        <input type="text" id="business_addr">
+                        <input style="width: 100%" type="text" id="business_addr">
                     </td>
                 </tr>
-
-                <tr>
-                    <td>GPS地址：</td>
-                    <td colspan="3">
-                        <input type="text" id="gps_addr">
-                    </td>
-                    <td>端口：</td>
-                    <td>
-                        <input type="text" id="gps_port">
-                    </td>
-                </tr>
-                <tr>
-                    <td>新支付地址：</td>
-                    <td colspan="5">
-                        <input type="text" id="new_pay_addr">
-                    </td>
-                </tr>
-
                 <tr>
                     <td colspan="2">
                         <label for="open_debug">开启调试模式</label>
-                        <input type="checkbox" id="open_debug">
+                        <input type="checkbox" id="open_debug" onclick="onDebug()">
                     </td>
                     <td colspan="2">
                         <label for="open_hx">开启环信</label>
-                        <input type="checkbox" id="open_hx">
+                        <input type="checkbox" id="open_hx" checked="true" disabled="disabled">
                     </td>
                     <td colspan="2">
                         <label for="write_log">日志写入文件</label>
@@ -239,53 +235,27 @@
 
                 <tr>
                     <td colspan="2">
-                        <label for="open_debug">旧版调试配置</label>
+                        <label for="old_config">旧版调试配置</label>
                         <input type="checkbox" id="old_config">
                     </td>
 
                 </tr>
             </table>
-
-
-            <div class="row">
-                服务器地址：
-                <input type="radio" id="url_online" checked="true" onclick="url_online_change()">线上
-                <input type="radio" id="url_offline" onclick="url_offline_change()">线下
-                <input type="radio" id="url_shuang" onclick="url_shuang_change()">双
-                <input type="radio" id="url_tao" onclick="url_tao_change()">涛
-                <input type="radio" id="url_other" onclick="url_otherchange()">其他
-            </div>
-
-            <div class="row" id="url_input_row" style="display:none;">
-                <input id="url" placeholder="请输入服务器地址" style="width:100%" type="text">
-            </div>
-
-            <div class="row" style="display:none;">
-                是否开启环信：<input type="checkbox" id="isOpenHx" checked="true">
-            </div>
-            <div class="row">
-                是否调试模式：<input type="checkbox" id="isDebug">
-            </div>
-            <div class="row">
-                日志是否写到文件中：<input type="checkbox" id="isWriteLog">
-            </div>
-            <button type="button" class="row" onclick="createQR()">生成二维码</button>
-            <div id="qrcode" class="qr"></div>
+            <input type="button" class="row" onclick="createQR()" value="生成二维码"/>
+            <div id="config_qrcode" class="qr"></div>
 
         </div>
-        <!--<div id="b_page" class="content">-->
-        <!--<div id="appinfo"></div>-->
-        <!--</div>-->
+        <div id="c_page" class="content"></div>
     </div>
 </div>
 
-<!--弹出层时背景层DIV-->
+<!--弹出层-->
 <div id="fade" class="black_overlay"></div>
 <div id="popup_div" class="white_content">
     <h4 id="title" style="text-align: center;">名称</h4>
     <div id="download_qr" class="qr"></div>
     <p style="margin-top: 50px; text-align:center">
-        <input style="margin:auto" type="button" value="确定" onclick="CloseDiv('popup_div','fade')"/>
+        <input class="row" type="button" value="确定" onclick="CloseDiv('popup_div','fade')"/>
     </p>
 
 </div>
@@ -315,6 +285,7 @@
     /////////菜单项目
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     window.onload = function () {
+        $("#business_addr").val(URL_COOL);
         $.ajax({
             type: "GET",
             url: "AppDirServlet",
@@ -328,8 +299,8 @@
                 //alert(data);
                 var data2 = eval(data);
                 for (var i = 0; i < data2.length; i++) {
-                    $("#tabs").append("<li id='b_li_" + i + "' name='" + i + "'><a style='color: #fff' href='#b_page_" + i + "'>" + data2[i] + "</a></li>")
-                    $("#tab_content").append("<div id='b_page_" + i + "' class='content'> <div id='appinfo_" + i + "'> </div></div>")
+                    $("#tabs").append("<li id='b_li_" + i + "'><a style='color: #fff' href='#b_page_" + i + "'>" + data2[i] + "</a></li>")
+                    $("#tab_content").append("<div id='b_page_" + i + "' class='content'> <div class='tablestyle' id='appinfo_" + i + "'> </div></div>")
                 }
 
 
@@ -358,20 +329,13 @@
 
             if (this.id == "a_li") {
 
+            } else if (this.id == "c_li") {
+                // getOnlineAppInfo();
             } else {
-                var index = this.name;
+                var idsplits = this.id.split("_");
                 var name = $("#" + this.id + ">a").text();
-                getAppInfo(name, index)
+                getAppInfo2(name, idsplits[idsplits.length - 1]);
             }
-
-
-//            if (this.id == "a_li") {
-//
-//            } else if (this.id == "b_li") {
-//                getTestAppInfo()
-//            } else if (this.id == "c_li") {
-//                getAppInfo()
-//            }
         }
     }
 
@@ -380,145 +344,76 @@
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //云平台
     var URL_COOL = "http://cool.haoyunqi.com.cn";
+    //Test
+    var URL_TS = "http://ts-cool.haoyunqi.com.cn";
     //demo
     var URL_DEMO = "http://demo.haoyunqi.com.cn"
-    //Test
-    var URL_TEST = "http://ts-cool.haoyunqi.com.cn";
     //220m
-    var URL_220 = "http://811713.cicp.net/cool.web";
+    var URL_220m = "http://811713.cicp.net/cool.web";
     //220
     var URL_220 = "http://192.168.2.220:8080/cool.web";
 
-    //GPS地址
-    var gps_addr_200 = "";
-    //GPS端口
-    var gps_port_200 = "";
-
-
-    var URL_SHUANG = "http://192.168.2.21:8080/cool.shuang";
-    var URL_TAO = "http://192.168.2.20:8080/cool.web";
-
     function onCoolChange() {
-        $("#business_addr").text();
-        $("#gps_addr").text();
-        $("#gps_port").text();
-        $("#new_pay_addr").text();
+        $("#business_addr").val(URL_COOL);
     }
 
 
-    function onTestChange() {
-
+    function onTsChange() {
+        $("#business_addr").val(URL_TS);
     }
 
     function onDemoChange() {
-
+        $("#business_addr").val(URL_DEMO);
     }
 
     function on220mChange() {
-
+        $("#business_addr").val(URL_220m);
     }
 
     function on220Change() {
-
+        $("#business_addr").val(URL_220);
     }
 
-
-    var qrcode = new QRCode(document.getElementById("qrcode"), {
-        text: "",
-        width: 200,
-        height: 200,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-    });
-
+    function onDebug() {
+        var isDebug = $("#open_debug").is(":checked");
+        if (isDebug) {
+            $("#open_hx").removeAttr("disabled");
+        } else {
+            $("#open_hx").attr("disabled", "disabled");
+        }
+    }
 
     function createQR() {
-
-        var url = URL_220;
-        if (document.getElementById("url_online").checked) {
-            url = URL_COOL;
-        } else if (document.getElementById("url_offline").checked) {
-            url = URL_220;
-        } else if (document.getElementById("url_shuang").checked) {
-            url = URL_SHUANG;
-        } else if (document.getElementById("url_tao").checked) {
-            url = URL_TAO;
-        } else {
-            var otherUrl = document.getElementById("url").value;
-            var str = otherUrl.replace(/(^\s*)|(\s*$)/g, '');//去除空格;
-            if (str == '' || str == undefined || str == null) {
-                alert("地址不能为空")
-                return;
-            }
-            url = otherUrl;
+        var url = $("#business_addr").val().replace(/(^\s*)|(\s*$)/g, '');//去除空格;
+        if (url == undefined || url == null || url.length == 0) {
+            alert("地址不能为空");
+            return;
         }
 
-        var isOpenHx = document.getElementById("isOpenHx").checked;
-        var isDebug = document.getElementById("isDebug").checked
-        var isWriteLog = document.getElementById("isWriteLog").checked
+        var isDebug = $("#open_debug").is(":checked");
+        var isOpenHx = $("#open_hx").is(":checked");
+        var isWriteLog = $("#write_log").is(":checked");
+        var isOldConfig = $("#old_config").is(":checked");
 
         var params = {
-            "packageName": "com.dlh.hqy.psclient",
             "dateStr": getCurrentDateYYYYMMDD(),
             "urlStr": url,
             "openHx": isOpenHx,
             "debug": isDebug,
             "writeLog": isWriteLog
         }
+
+        if (!isOldConfig) {
+            params = {
+                "functionType": "debugConfig",
+                "data": params
+            }
+        }
+
+        $('#config_qrcode').empty()
         var json = JSON.stringify(params);
+        $('#config_qrcode').qrcode(json);
 
-        qrcode.clear();
-        qrcode.makeCode(json);
-    }
-
-
-    function url_online_change() {
-        document.getElementById("url_online").checked = true;
-        document.getElementById("url_offline").checked = false;
-        document.getElementById("url_shuang").checked = false;
-        document.getElementById("url_tao").checked = false;
-        document.getElementById("url_other").checked = false;
-        document.getElementById("url_input_row").style.display = 'none';
-
-    }
-
-    function url_offline_change() {
-        document.getElementById("url_online").checked = false;
-        document.getElementById("url_offline").checked = true;
-        document.getElementById("url_shuang").checked = false;
-        document.getElementById("url_tao").checked = false;
-        document.getElementById("url_other").checked = false;
-        document.getElementById("url_input_row").style.display = 'none';
-    }
-
-    function url_shuang_change() {
-        document.getElementById("url_online").checked = false;
-        document.getElementById("url_offline").checked = false;
-        document.getElementById("url_shuang").checked = true;
-        document.getElementById("url_tao").checked = false;
-        document.getElementById("url_other").checked = false;
-        document.getElementById("url_input_row").style.display = 'none';
-    }
-
-    function url_tao_change() {
-        document.getElementById("url_online").checked = false;
-        document.getElementById("url_offline").checked = false;
-        document.getElementById("url_shuang").checked = false;
-        document.getElementById("url_tao").checked = true;
-        document.getElementById("url_other").checked = false;
-        document.getElementById("url_input_row").style.display = 'none';
-    }
-
-
-    function url_otherchange() {
-        document.getElementById("url_online").checked = false;
-        document.getElementById("url_offline").checked = false;
-        document.getElementById("url_shuang").checked = false;
-        document.getElementById("url_tao").checked = false;
-        document.getElementById("url_other").checked = true;
-        document.getElementById("url_input_row").style.display = 'block';
-        document.getElementById("url").value = URL_220;
     }
 
     function getCurrentDateYYYYMMDD() {
@@ -531,81 +426,53 @@
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////第二个页面
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    function getTestAppInfo() {
-        $('#appinfo').empty()
+    function getOnlineAppInfo() {
+        var params = {
+            "appType": 1,
+            "page": 1,
+            "pageIndex": 1,
+            "pageSize": 20,
+            "rows": 20
+        }
+        var json = JSON.stringify(params);
         $.ajax({
-            type: "GET",
-            url: "TestAppServlet",
-            dataType: "json",
+            type: "POST",
+            url: "http://api.haoyunqi.com.cn/open-api/app/release/v1/query/info/list",
+            data: json,
+            dataType: 'text',//here
+            processData: false,//数据不进行预处理
+            xhrFields: {//跨越请求，必须加上这个字段
+                withCredentials: true
+            },
             statusCode: {
                 404: function () {
                     alert('page not found');
                 }
             },
             success: function (data) {
-                //alert(data);
-                var data2 = eval(data);
-                //表格
-                var table = $("<table border='0' style='width: 100%;'>");
-                // table.append($("<tr>"));
-                // table.append($("<th style='width: 70%;'>文件名称</th>"));
-                // table.append($("<th style='width: 15%;'>二维码</th>"));
-                // table.append($("</tr>"))
+                alert('请求成功');
 
-                for (var i = 0; i < data2.length; i++) {
-                    var path = data2[i];
-                    var name = path.substr(path.lastIndexOf('/') + 1);
-                    table.append($("<tr>"));
-                    table.append($("<td style='width: 70%; height: 50px'>" + name + "</td>"));
-                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='二维码' onclick='showQr(this.id,this.name)'></td>"));
-                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='下载'  onclick='downloadQr(this.id,this.name)'></td>"));
-                    table.append($("</tr>"))
-                }
-                table.append($("</table>"));
-
-                $("#appinfo").append(table)
             },
-            error: function () {
+            error: function (msg) {
+                alert('请求发生错误');
             }
         });
-    }
-
-    function showQr(id, path) {
-        $('#download_qr').empty()
-        var qrcode = new QRCode(document.getElementById("download_qr"), {
-            text: "",
-            width: 200,
-            height: 200,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
-        var downloadurl = location.protocol + "//" + window.location.host + "/" + path;
-        qrcode.makeCode(downloadurl);
-        $("#title").text(path.substr(path.lastIndexOf('/') + 1));
-        ShowDiv('popup_div', 'fade')
-    }
-
-
-    function downloadQr(id, path) {
-        var $eleForm = $("<form method='get'></form>");
-        $eleForm.attr("action", path);
-        $(document.body).append($eleForm);
-        //提交表单，实现下载
-        $eleForm.submit();
     }
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////第三个页面
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    function getAppInfo(dir, index) {
+    function getAppInfo2(dir, index) {
+        var params = {"dirName": dir}
+        var json = JSON.stringify(params);
+
         $("#appinfo_" + index).empty();
         $.ajax({
-            type: "GET",
-            url: "TestAppServlet",
-            data: dir,
-            dataType: "json",
+            type: 'post',
+            url: 'AppServlet',
+            data: json,
+            dataType: 'json',
             statusCode: {
                 404: function () {
                     alert('page not found');
@@ -615,24 +482,22 @@
                 //alert(data);
                 var data2 = eval(data);
                 //表格
-                var table = $("<table border='0' style='width: 100%;'>");
-                // table.append($("<tr>"));
-                // table.append($("<th style='width: 70%;'>文件名称</th>"));
-                // table.append($("<th style='width: 15%;'>二维码</th>"));
-                // table.append($("</tr>"))
-
+                var domTable = "<table border='0' style='width: 100%;'>";
                 for (var i = 0; i < data2.length; i++) {
                     var path = data2[i];
                     var name = path.substr(path.lastIndexOf('/') + 1);
-                    table.append($("<tr>"));
-                    table.append($("<td style='width: 70%; height: 50px'>" + name + "</td>"));
-                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='二维码' onclick='showQr(this.id,this.name)'></td>"));
-                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='下载'  onclick='downloadQr(this.id,this.name)'></td>"));
-                    table.append($("</tr>"))
-                }
-                table.append($("</table>"));
 
-                $("#appinfo_" + index).append(table)
+                    var domTr = "<tr>" +
+                            "<td style='width: 70%; height: 50px'>" + name + "</td><td style='width: 15%;'>" +
+                            "<input  name='" + path + "' type='button' value='二维码' onclick='showQr(this.id,this.name)'></td>" +
+                            "<td style='width: 15%;'><input name='" + path + "' type='button' value='下载'  onclick='downloadApp(this.id,this.name)'></td>" +
+                            "</tr>";
+                    domTable = domTable + domTr;
+                }
+                domTable = domTable + "</table>";
+
+
+                $("#appinfo_" + index).append(domTable)
             },
             error: function () {
             }
@@ -640,45 +505,34 @@
     }
 
 
-    function getAppInfo() {
-        //$('#appinfo').empty()
-        $.ajax({
-            type: "GET",
-            url: "AppServlet",
-            dataType: "json",
-            statusCode: {
-                404: function () {
-                    alert('page not found');
-                }
-            },
-            success: function (data) {
+    function showQr(id, path) {
+        $('#download_qr').empty()
+        var downloadurl = location.protocol + "//" + window.location.host + "/" + path;
 
-                alert(data);
-//                var data2 = eval(data);
-//                //表格
-//                var table = $("<table border='0' style='width: 100%;'>");
-//                // table.append($("<tr>"));
-//                // table.append($("<th style='width: 70%;'>文件名称</th>"));
-//                // table.append($("<th style='width: 15%;'>二维码</th>"));
-//                // table.append($("</tr>"))
-//
-//                for (var i = 0; i < data2.length; i++) {
-//                    var path = data2[i];
-//                    var name = path.substr(path.lastIndexOf('/') + 1);
-//                    table.append($("<tr>"));
-//                    table.append($("<td style='width: 70%; height: 50px'>" + name + "</td>"));
-//                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='二维码' onclick='showQr(this.id,this.name)'></td>"));
-//                    table.append($("<td style='width: 15%;'><input name='" + path + "' type='button' value='下载'  onclick='downloadQr(this.id,this.name)'></td>"));
-//                    table.append($("</tr>"))
-//                }
-//                table.append($("</table>"));
-//
-//                $("#appinfo").append(table)
-            },
-            error: function () {
-            }
-        });
+        // $("#download_qr").qrcode(encodeURI(downloadurl))
+
+        $("#download_qr").qrcode({
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            text: encodeURI(downloadurl)
+        })
+        $("#title").text(path.substr(path.lastIndexOf('/') + 1));
+        ShowDiv('popup_div', 'fade')
     }
+
+
+    function downloadApp(id, path) {
+        window.open(path);
+
+//        var $eleForm = $("<form method='get'></form>");
+//        $eleForm.attr("action", encodeURI(path));
+//        $(document.body).append($eleForm);
+//        //提交表单，实现下载
+//        $eleForm.submit();
+    }
+
 </script>
 
 

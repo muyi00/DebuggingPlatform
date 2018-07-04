@@ -39,9 +39,8 @@ public class AppDirServlet extends HttpServlet {
     }
 
     private void mkdirOnlineDir(File rootFile) {
-        File f = new File(rootFile, "线上APP");
-        if (!f.exists()) {
-            f.mkdirs();
+        if (!rootFile.exists()) {
+            rootFile.mkdirs();
         }
     }
 
