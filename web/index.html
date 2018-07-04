@@ -524,7 +524,8 @@
 
 
     function downloadApp(id, path) {
-        window.open(path);
+        var downloadurl = location.protocol + "//" + window.location.host + "/" + path;
+        window.open(downloadurl);
 
 //        var $eleForm = $("<form method='get'></form>");
 //        $eleForm.attr("action", encodeURI(path));
